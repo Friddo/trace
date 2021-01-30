@@ -16,10 +16,12 @@ if 'tabulate' not in installed_packages:
 from tabulate import tabulate
 
 # define platform for cmd line tools
-if platform.system() == "Darwin" or platform.system() == "Linux":
-    clear=lambda:os.system('clear')
-elif platform.system() == "Windows":
+if platform.system() == "Windows":
     clear=lambda:os.system('cls')
+    sys = 1
+else: #for macOS and linux
+    sys = 0
+    clear=lambda:os.system('clear')
 
 #parse command line arguments
 IP = sys.argv[1]
@@ -34,7 +36,8 @@ for a in range(len(args)):
         stats = True
 
 #start process
-proc = subprocess.Popen(["traceroute -m "+max+" -n "+IP], stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+cmd = "traceroute -m "+max+" -n "+IP if sys else "tracert -d -4 -h "+max+" "+IP
+proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True, universal_newlines=True)
 
 clear()
 print("Tracing...")
@@ -45,6 +48,10 @@ totalTime, u, lastip, ipList = 0,0,"0.0.0.0",[]
 #main loop
 for l in proc.stdout:
     print(l,end="")
+    if sys:
+        tmp = l.split()[:-1]
+        tmp.insert(1,l.split()[-1])
+        l = " ".join(tmp)
     hip = l.split()
 
     if hip[1] == "*" or hip[1] == "to":
