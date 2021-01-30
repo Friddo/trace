@@ -24,7 +24,7 @@ elif platform.system() == "Windows":
 #parse command line arguments
 IP = sys.argv[1]
 args = sys.argv[2:]
-max = 20
+max = "20"
 stats = False
 for a in range(len(args)):
     b = args[a]
