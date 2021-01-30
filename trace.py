@@ -99,8 +99,8 @@ if stats == True:
     totalT = round(t.time() - start_time,2)
     bounceT = round(sum([float(a[6].split(" ")[0]) for a in table]),2)
     reqT = round(totalT - bounceT/1000,2)
-    bounceT = str(bounceT/1000)+" s" if bounceT > 1000 else str(bounceT)+" ms" #convert to seconds if t > 1s
-    info = [[str(round(totalT,2))+" s",bounceT,str(reqT)+" s",str(u)+" IPs"]]
+    bounceT = str(round(bounceT/1000,2))+" s" if bounceT > 1000 else str(bounceT)+" ms" #convert to seconds if t > 1s
+    info = [[str(totalT)+" s",bounceT,str(reqT)+" s",str(u)+" IPs"]]
     print("")
     print(tabulate(info, headers=["Exec. time","Total time bouncing","Total time stuck in req.","Unique IPs visited"]))
 print("")
