@@ -48,7 +48,7 @@ totalTime, u, lastip, ipList = 0,0,"0.0.0.0",[]
 #main loop
 for l in proc.stdout:
     print(l,end="")
-    if sys:
+    if sys: #convert to same format as macOS/linux
         tmp = l.split()[:-1]
         tmp.insert(1,l.split()[-1])
         l = " ".join(tmp)
