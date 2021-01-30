@@ -20,4 +20,3 @@ Program will return error, if the tabulate package is missing:
 $ python3 trace.py github.com
 Please install tabulate with: `pip install tabulate` (24kb)
 ```
-# trace
