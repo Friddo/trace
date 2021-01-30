@@ -71,7 +71,7 @@ for l in proc.stdout:
         if ipSplit[0] == ipSplitLast[0] and ipSplit[1] == ipSplitLast[1]:
             same = True
     elif ipSplit[0] < 224:
-        if ipSplit[0] == ipSplitLast[0] and ipSplit[0] == ipSplitLast[0] and ipSplit[0] == ipSplitLast[0]:
+        if ipSplit[0] == ipSplitLast[0] and ipSplit[1] == ipSplitLast[1] and ipSplit[2] == ipSplitLast[2]:
             same = True
 
     #Calc total time
