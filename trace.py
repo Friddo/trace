@@ -17,7 +17,7 @@ if 'tabulate' not in installed_packages:
 if 'requests' not in installed_packages:
     print("Please install requests with: `pip install requests` (61kb)")
     c = 1
-if c: quit()
+if c: sys.exit()
 import requests
 from tabulate import tabulate
 
