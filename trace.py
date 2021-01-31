@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, sys, platform #for command line interaction and basic functionality
+import os, sys, platform, getopt #for command line interaction and basic functionality
 import subprocess
 import re
 
@@ -20,7 +20,6 @@ if c: quit()
 import requests
 from tabulate import tabulate
 
-
 # define platform for cmd line tools
 if platform.system() == "Windows":
     clear=lambda:os.system('cls')
@@ -30,16 +29,15 @@ else: #for macOS and linux
     clear=lambda:os.system('clear')
 
 #parse command line arguments
-IP = sys.argv[-1]
-args = sys.argv[1:-1]
+opt, args = getopt.getopt(sys.argv[1:], 'm:i')
 max = "20"
 stats = False
-for a in range(len(args)):
-    b = args[a]
-    if b == "-m":
-        max = args[a+1]
-    if b == "-i":
+for a,b in opt:
+    if a == "-m":
+        max = b
+    if a == "-i":
         stats = True
+IP = args[0]
 
 #start process
 cmd = "C:\\Windows\\System32\\TRACERT.exe -d -4 -h "+max+" "+IP if s else ["traceroute -m "+max+" -n "+IP]
