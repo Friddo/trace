@@ -18,14 +18,14 @@ from tabulate import tabulate
 # define platform for cmd line tools
 if platform.system() == "Windows":
     clear=lambda:os.system('cls')
-    sys = 1
+    s = 1
 else: #for macOS and linux
-    sys = 0
+    s = 0
     clear=lambda:os.system('clear')
 
 #parse command line arguments
-IP = sys.argv[1]
-args = sys.argv[2:]
+IP = sys.argv[-1]
+args = sys.argv[1:-1]
 max = "20"
 stats = False
 for a in range(len(args)):
@@ -36,7 +36,8 @@ for a in range(len(args)):
         stats = True
 
 #start process
-cmd = "traceroute -m "+max+" -n "+IP if sys else "tracert -d -4 -h "+max+" "+IP
+cmd = "tracert -d -4 -h "+max+" "+IP if s else "traceroute -m "+max+" -n "+IP
+print(cmd)
 proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True, universal_newlines=True)
 
 clear()
@@ -48,7 +49,7 @@ totalTime, u, lastip, ipList = 0,0,"0.0.0.0",[]
 #main loop
 for l in proc.stdout:
     print(l,end="")
-    if sys: #convert to same format as macOS/linux
+    if s: #convert to same format as macOS/linux
         tmp = l.split()[:-1]
         tmp.insert(1,l.split()[-1])
         l = " ".join(tmp)
@@ -75,7 +76,10 @@ for l in proc.stdout:
             same = True
 
     #Calc total time
-    if "*" in time: time.remove("*")
+    while "*" in time: time.remove("*")
+    while "!Z" in time: time.remove("!Z") #private port
+    while "!X" in time: time.remove("!X") #private port
+
     totalTime += sum([float(time[a]) for a in range(0,len(time),2)])
 
     #if not on same network, append
@@ -99,7 +103,7 @@ for ip in ipList:
     state = data["state"] if data["state"] != None and data["state"] != "Not found" else "."
     table.append([str(i),ip[0],country,state,city,postal,str(round(ip[1],2))+" ms"])
 print("")
-print(tabulate(table, headers=["Bounce #","IPv4","Country","State","City","Postal code","Time spent"]))
+print(tabulate(table, headers=["#","IPv4","Country","State","City","Postal code","Time spent"]))
 
 ###optional info
 if stats == True:

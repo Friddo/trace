@@ -4,7 +4,7 @@ Simple python script for a more descriptive traceroute command
 # Guide
 
 ```
-python3 trace.py IP [-m] [-i]
+python3 trace.py [-m] [-i] IP
 ```
 where:  
 `-m`: max network bounces, default = 20  
