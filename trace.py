@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os, sys, platform, getopt #for command line interaction and basic functionality
 import subprocess
+import socket
 import re
 
 import time as t #for program execution time
@@ -109,14 +110,19 @@ for ip in ipList:
     city = data["city"] if data["city"] != None and data["city"] != "Not found" else "."
     postal = data["postal"] if data["postal"] != None and data["postal"] != "Not found" else "."
     state = data["state"] if data["state"] != None and data["state"] != "Not found" else "."
-    table.append([str(i),ip[0],country,state,city,postal,str(round(ip[1],2))+" ms"])
+    try:
+        name = socket.gethostbyaddr(ip[0])[0]
+    except:
+        name = "."
+    if len(name) > 15: name = name.split(".")[0]
+    table.append([str(i),ip[0],name,country,state,city,postal,str(round(ip[1],2))+" ms"])
 print("")
-print(tabulate(table, headers=["#","IPv4","Country","State","City","Postal code","Time spent"]))
+print(tabulate(table, headers=["#","IPv4","Name","Country","State","City","Postal code","Time spent"]))
 
 ###optional info
 if stats == True:
     totalT = round(t.time() - start_time,2)
-    bounceT = round(sum([float(a[6].split(" ")[0]) for a in table]),2)
+    bounceT = round(sum([float(a[7].split(" ")[0]) for a in table]),2)
     reqT = round(totalT - bounceT/1000,2)
     bounceT = str(round(bounceT/1000,2))+" s" if bounceT > 1000 else str(bounceT)+" ms" #convert to seconds if t > 1s
     info = [[str(totalT)+" s",bounceT,str(reqT)+" s",str(u)+" IPs"]]
