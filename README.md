@@ -14,9 +14,12 @@ where:
 # Dependencies
 
 * tabulate
+* requests
 
-Program will return error, if the tabulate package is missing:
+
+Program will return error, if the tabulate or requests package is missing:
 ```
 $ python3 trace.py github.com
 Please install tabulate with: `pip install tabulate` (24kb)
+Please install requests with: `pip install requests` (61kb)
 ```
