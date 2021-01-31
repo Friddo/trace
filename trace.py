@@ -50,12 +50,12 @@ totalTime, u, lastip, ipList = 0,0,"0.0.0.0",[]
 for l in proc.stdout:
     print(l,end="")
     if s: #convert to same format as macOS/linux
-        tmp = l.split()[:-1]
-        tmp.insert(1,l.split()[-1])
-        l = " ".join(tmp)
+        tmp = l.split()[:4]
+        tmp.insert(1,l.split()[4:])
+        l = " ".join([j for i in tmp for j in i])
     hip = l.split()
 
-    if hip[1] == "*" or hip[1] == "to":
+    if hip[1] == "*" or hip[1] == "to" or hip[1] == "Request":
         continue
 
     hopIP,time = (hip[0],hip[1:]) if m.match(hip[0]) else (hip[1],hip[2:])
