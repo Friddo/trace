@@ -36,7 +36,7 @@ for a in range(len(args)):
         stats = True
 
 #start process
-cmd = "tracert -d -4 -h "+max+" "+IP if s else "traceroute -m "+max+" -n "+IP
+cmd = "C::\Windows\\System32\\TRACERT.exe -d -4 -h "+max+" "+IP if s else "traceroute -m "+max+" -n "+IP
 print(cmd)
 proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True, universal_newlines=True)
 
