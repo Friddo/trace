@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import requests #for ip geodata
 import os, sys, platform #for command line interaction and basic functionality
 import subprocess
 import re
@@ -10,10 +9,17 @@ start_time = t.time()
 #check if tabulate module is installed
 from pip._internal.utils.misc import get_installed_distributions
 installed_packages = [package.project_name for package in get_installed_distributions()]
+c = 0
 if 'tabulate' not in installed_packages:
     print("Please install tabulate with: `pip install tabulate` (24kb)")
-    quit()
+    c = 1
+if 'requests' not in installed_packages:
+    print("Please install requests with: `pip install requests` (61kb)")
+    c = 1
+if c: quit()
+import requests
 from tabulate import tabulate
+
 
 # define platform for cmd line tools
 if platform.system() == "Windows":
@@ -36,9 +42,9 @@ for a in range(len(args)):
         stats = True
 
 #start process
-cmd = "C::\Windows\\System32\\TRACERT.exe -d -4 -h "+max+" "+IP if s else "traceroute -m "+max+" -n "+IP
+cmd = "C:\\Windows\\System32\\TRACERT.exe -d -4 -h "+max+" "+IP if s else ["traceroute -m "+max+" -n "+IP]
 print(cmd)
-proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
 
 clear()
 print("Tracing...")
@@ -50,14 +56,17 @@ totalTime, u, lastip, ipList = 0,0,"0.0.0.0",[]
 for l in proc.stdout:
     print(l,end="")
     if s: #convert to same format as macOS/linux
-        tmp = l.split()[:4]
-        tmp.insert(1,l.split()[4:])
-        l = " ".join([j for i in tmp for j in i])
+        if len(l.split()) != 8:
+            continue
+        tmp = l.split()[:7]
+        tmp.insert(1,l.split()[7:][0])
+        l = " ".join(tmp)
     hip = l.split()
 
-    if hip[1] == "*" or hip[1] == "to" or hip[1] == "Request":
+    if hip[1] == "*" or hip[1] == "to": #for macOS/linux
         continue
 
+    #Extract data
     hopIP,time = (hip[0],hip[1:]) if m.match(hip[0]) else (hip[1],hip[2:])
     u+=1
 
@@ -83,6 +92,7 @@ for l in proc.stdout:
     totalTime += sum([float(time[a]) for a in range(0,len(time),2)])
 
     #if not on same network, append
+
     if same != True:
         ipList.append([hopIP,totalTime])
         totalTime = 0
