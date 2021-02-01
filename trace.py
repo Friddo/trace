@@ -100,6 +100,7 @@ for l in proc.stdout:
 #format for prettyprint
 i = 0
 table = []
+print("\nFetching IP names: 0/" + str(len(ipList)))
 for ip in ipList:
     i+=1
     url = "https://geolocation-db.com/json/"+ip[0]
@@ -112,11 +113,15 @@ for ip in ipList:
     state = data["state"] if data["state"] != None and data["state"] != "Not found" else "."
     try:
         name = socket.gethostbyaddr(ip[0])[0]
+        if len(name) > 15: name = name.split(".")[0]
     except:
         name = "."
-    if len(name) > 15: name = name.split(".")[0]
+    #small indicator for windows
+    sys.stdout.write("\033[F\033[K")
+    print("Fetching IP names: "+str(i) + "/" + str(len(ipList)))
+
     table.append([str(i),ip[0],name,country,state,city,postal,str(round(ip[1],2))+" ms"])
-print("")
+sys.stdout.write("\033[F\033[K")
 print(tabulate(table, headers=["#","IPv4","Name","Country","State","City","Postal code","Time spent"]))
 
 ###optional info
